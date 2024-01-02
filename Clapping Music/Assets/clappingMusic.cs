@@ -31,6 +31,8 @@ public class clappingMusic: MonoBehaviour {
 
    private String[] correctPattern = new String[12];
    private String[] clapAnswer = new String[12];
+   string correctPatternArray;
+   string answeredPatternArray;
    int correctPatternNumber = 0;
    int stage = 0;
    int correct = 0;
@@ -60,94 +62,90 @@ public class clappingMusic: MonoBehaviour {
    void DeterminePattern(){
       if(bomb.IsIndicatorOn("BOB")){
       correctPatternNumber = 1;
-      Debug.Log("Pattern 1 is the correct pattern.");
+      Debug.LogFormat("[Clapping Music #{0}] Pattern 1 is the correct pattern.", moduleId);
          for(int i = 0; i<12; i++){
             correctPattern[i] = pattern1[i];
          }
 
       } else if(bomb.GetBatteryCount()==0){
       correctPatternNumber = 2;   
-      Debug.Log("Pattern 2 is the correct pattern.");
+      Debug.LogFormat("[Clapping Music #{0}] Pattern 2 is the correct pattern.", moduleId);
          for(int i = 0; i<12; i++){
             correctPattern[i] = pattern2[i];
          }
 
       } else if(bomb.GetPortCount(Port.PS2) == 1){
       correctPatternNumber = 3;      
-      Debug.Log("Pattern 3 is the correct pattern.");
+      Debug.LogFormat("[Clapping Music #{0}] Pattern 3 is the correct pattern.", moduleId);
          for(int i = 0; i<12; i++){
             correctPattern[i] = pattern3[i];
          }
 
       } else if(bomb.GetSerialNumberNumbers().Last() == 0){
          correctPatternNumber = 4;
-         Debug.Log("Pattern 4 is the correct pattern.");
+         Debug.LogFormat("[Clapping Music #{0}] Pattern 4 is the correct pattern.", moduleId);
          for(int i = 0; i<12; i++){
             correctPattern[i] = pattern4[i];
          }
       } else if(bomb.GetPortCount(Port.Parallel) == 1){
          correctPatternNumber = 5;
-         Debug.Log("Pattern 5 is the correct pattern.");
+         Debug.LogFormat("[Clapping Music #{0}] Pattern 5 is the correct pattern.", moduleId);
          for(int i = 0; i<12; i++){
             correctPattern[i] = pattern5[i];
          }
       } else if(bomb.IsIndicatorOff("CLR")){
          correctPatternNumber = 6;
-         Debug.Log("Pattern 6 is the correct pattern.");
+         Debug.LogFormat("[Clapping Music #{0}] Pattern 6 is the correct pattern.", moduleId);
          for(int i = 0; i<12; i++){
             correctPattern[i] = pattern6[i];
          }
       } else if((bomb.GetSerialNumberNumbers().Last() == 2) || (bomb.GetSerialNumberNumbers().Last() == 3) || (bomb.GetSerialNumberNumbers().Last() == 5) || (bomb.GetSerialNumberNumbers().Last() == 7)){
          correctPatternNumber = 7;
-         Debug.Log("Pattern 7 is the correct pattern.");
+         Debug.LogFormat("[Clapping Music #{0}] Pattern 7 is the correct pattern.", moduleId);
          for(int i = 0; i<12; i++){
             correctPattern[i] = pattern7[i];
          }
       } else if(bomb.GetPortPlateCount() % 2 == 0){
          correctPatternNumber = 8;
-         Debug.Log("Pattern 8 is the correct pattern.");
+         Debug.LogFormat("[Clapping Music #{0}] Pattern 8 is the correct pattern.", moduleId);
          for(int i = 0; i<12; i++){
             correctPattern[i] = pattern8[i];
          }
-      } else if(bomb.IsIndicatorOff("CLR") || bomb.IsIndicatorOn("NSA")){
+      } else if(bomb.IsIndicatorOn("CLR") || bomb.IsIndicatorOn("NSA")){
          correctPatternNumber = 9;
-         Debug.Log("Pattern 9 is the correct pattern.");
+        Debug.LogFormat("[Clapping Music #{0}] Pattern 9 is the correct pattern.", moduleId);
          for(int i = 0; i<12; i++){
             correctPattern[i] = pattern9[i];
          }
       } else if(bomb.GetPortCount(Port.Parallel) == bomb.GetPortCount(Port.Serial)){
          correctPatternNumber = 10;
-         Debug.Log("Pattern 10 is the correct pattern.");
+         Debug.LogFormat("[Clapping Music #{0}] Pattern 10 is the correct pattern.", moduleId);
          for(int i = 0; i<12; i++){
             correctPattern[i] = pattern10[i];
          }
       } else if(bomb.GetPortCount(Port.DVI) % 2 == 0){
          correctPatternNumber = 11;
-         Debug.Log("Pattern 11 is the correct pattern.");
+         Debug.LogFormat("[Clapping Music #{0}] Pattern 11 is the correct pattern.", moduleId);
          for(int i = 0; i<12; i++){
             correctPattern[i] = pattern11[i];
          }
       } else {
          correctPatternNumber = 12;
-         Debug.Log("Pattern 12 is the correct pattern.");
+         Debug.LogFormat("[Clapping Music #{0}] Pattern 12 is the correct pattern.", moduleId);
          for(int i = 0; i<12; i++){
             correctPattern[i] = pattern12[i];
          }   
       }
    }
 
-  /*void LogClapAnswerContents() {
-    Debug.Log("Current contents of clapAnswer array:");
-    for (int i = 0; i < clapAnswer.Length; i++) {
-        Debug.LogFormat("clapAnswer[{0}] = {1}", i, clapAnswer[i]);
-    }
-}*/
+void LogCorrectPatternArray() {
+   correctPatternArray = "[ " + string.Join(", ", correctPattern) + " ]";
+   Debug.LogFormat("[Clapping Music #{0}] The correct clapping pattern is: {1}. ", moduleId, correctPatternArray);
+}
 
-void LogCorrectPatternContents() {
-    Debug.Log("The Correct Pattern:");
-    for (int i = 0; i < correctPattern.Length; i++) {
-        Debug.LogFormat("correctPattern[{0}] = {1}", i, correctPattern[i]);
-    }
+void LogAnsweredPatternArray() {
+   answeredPatternArray = "[ " + string.Join(", ", clapAnswer) + " ]";
+   Debug.LogFormat("[Clapping Music #{0}] You answered: {1}. ", moduleId, answeredPatternArray);
 }
 
    void PressClapButton(){
@@ -158,15 +156,10 @@ void LogCorrectPatternContents() {
       }
 
       audio.PlaySoundAtTransform("CLAP SOUND", transform);
-
-      Debug.Log("Clap Button was pressed!");
-      Debug.LogFormat("This is the {0}th button pressed.", stage+1);
       clapAnswer[stage] = "Clap";
       stage += 1;
 
       if (stage == 12){
-         LogCorrectPatternContents();
-
          for(int j = 0; j<12; j++){
             if (string.Equals(clapAnswer[j], correctPattern[j], StringComparison.OrdinalIgnoreCase)){
          correct += 1;
@@ -174,8 +167,14 @@ void LogCorrectPatternContents() {
 
       }
          if (correct == 12){
+            LogCorrectPatternArray();
+            LogAnsweredPatternArray();
+            Debug.LogFormat("[Clapping Music #{0}] Patterns matched! Module solved!", moduleId);
             Solve();
          } else{
+            LogCorrectPatternArray();
+            LogAnsweredPatternArray();
+            Debug.LogFormat("[Clapping Music #{0}] Patterns did not match. Strike!", moduleId);
             Strike();
             Array.Clear(clapAnswer,0, clapAnswer.Length);
             Debug.Log("Reset!");
@@ -193,15 +192,10 @@ void LogCorrectPatternContents() {
       }
 
       audio.PlaySoundAtTransform("REST SOUND", transform);
-
-      Debug.Log("Rest Button was pressed!");
-      Debug.LogFormat("This is the {0}th button pressed.", stage+1);
       clapAnswer[stage] = "Rest";
       stage += 1;
 
       if (stage == 12){
-         LogCorrectPatternContents() ;
-
          for(int a = 0; a<12; a++){
             if (string.Equals(clapAnswer[a], correctPattern[a], StringComparison.OrdinalIgnoreCase)){
          correct += 1;
@@ -209,14 +203,21 @@ void LogCorrectPatternContents() {
          }
 
          if (correct == 12){
+            LogCorrectPatternArray();
+            LogAnsweredPatternArray();
+            Debug.LogFormat("[Clapping Music #{0}] Patterns matched! Module solved!", moduleId);
             Solve();
-         } else {
+            
+         } else{
+            LogCorrectPatternArray();
+            LogAnsweredPatternArray();
+            Debug.LogFormat("[Clapping Music #{0}] Patterns did not match. Strike!", moduleId);
             Strike();
-            Array.Clear(clapAnswer, 0, clapAnswer.Length);
+            Array.Clear(clapAnswer,0, clapAnswer.Length);
             Debug.Log("Reset!");
          }
-         correct = 0;
          stage = 0;
+         correct = 0;
       }
    }
 
@@ -233,14 +234,42 @@ void LogCorrectPatternContents() {
    }
 
 #pragma warning disable 414
-   private readonly string TwitchHelpMessage = @"Use !{0} to do something.";
+   private readonly string TwitchHelpMessage = @"Use !{0} C/R for clap/rest respectively. Chain commands via spaces.";
 #pragma warning restore 414
 
    IEnumerator ProcessTwitchCommand (string Command) {
+      Command = Command.Trim().ToUpper();
       yield return null;
+      string[] Commands = Command.Split(' ');
+      for (int i = 0; i<Commands.Length; i++){
+         Debug.Log(Commands[i]);
+         if ((Commands[i] != "C" && Commands[i] != "R") || Commands[i].Length != 1){
+            yield return "sendtochaterror I don't understand!";
+            yield break;
+         }
+      }
+
+      for (int i = 0; i< Commands.Length; i++){
+         if(Commands[i] == "C"){
+            PressClapButton();
+         } else if (Commands[i] == "R"){
+            PressRestButton();
+         }
+         yield return new WaitForSeconds(.1f);
+      }
+      
    }
 
    IEnumerator TwitchHandleForcedSolve () {
+
+      for(int d = 0; d<12; d++){
+         if(correctPattern[d] == "Clap"){
+            PressClapButton();
+         } else if (correctPattern[d] == "Rest"){
+            PressRestButton();
+         }
+         yield return new WaitForSeconds(.1f);
+      }
       yield return null;
    }
 }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: clappingMusic
   title: Clapping Music
-  author: Me
+  author: xmtc
   description: "\n\U0001F44F\U0001F44F\U0001F44FX \U0001F44F\U0001F44FX\U0001F44F
     X\U0001F44F\U0001F44FX - Steve Reich, 1972\n\nPress a sequence of claps and rests
     based on edgework.\n\nThis module was inspired by Steve Reich's Clapping Music
